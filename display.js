@@ -17,22 +17,22 @@ for (var y = 0; y < grid.length; y++) {
   for (var x = 0; x < grid[0].length; x++) {
     var val = grid[y][x];
     var color;
-    if (val <= 0.4) {
+    if (val == 0) {
       color = "#131391";
     }
-    else if (val <= 0.65) {
+    else if (val == 1) {
       color = "#2221FF";
     }
-    else if (val <= 0.79) {
+    else if (val == 2) {
       color = "#1BBF00";
     }
-    else if (val <= 0.9) {
+    else if (val == 3) {
       color = "#127F00";
     }
-    else if (val <= 0.95) {
+    else if (val == 4) {
       color = "#094000";
     }
-    else {
+    else if (val == 5) {
       color = "#403B23";
     }
     ctx.fillStyle = color;
