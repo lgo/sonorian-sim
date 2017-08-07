@@ -53,4 +53,3 @@ if __name__ == "__main__":
     f.write(json_grid("perlin", truncate_grid_data(zoom, terrains)))
 
     f.close()
-

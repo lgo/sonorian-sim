@@ -43,14 +43,14 @@ def scale_grid(grid,factor):
             scaled_x = (float(x) / n_w) * (w - 1.0)
             #if scaled_x > 2 and scaled_y > 1:
             #    pdb.set_trace()
-            top_left = grid[math.floor(scaled_y)][math.floor(scaled_x)]
-            top_right = grid[math.floor(scaled_y)][math.ceil(scaled_x)]
-            bot_left = grid[math.ceil(scaled_y)][math.floor(scaled_x)]
-            bot_right = grid[math.ceil(scaled_y)][math.ceil(scaled_x)]
+            top_left = grid[int(math.floor(scaled_y))][int(math.floor(scaled_x))]
+            top_right = grid[int(math.floor(scaled_y))][int(math.ceil(scaled_x))]
+            bot_left = grid[int(math.ceil(scaled_y))][int(math.floor(scaled_x))]
+            bot_right = grid[int(math.ceil(scaled_y))][int(math.ceil(scaled_x))]
 
-            top = interpolate(top_left, top_right, scaled_x - math.floor(scaled_x))
-            bot = interpolate(bot_left, bot_right, scaled_x - math.floor(scaled_x))
-            midpoint = interpolate(top, bot, (scaled_y - math.floor(scaled_y)))
+            top = interpolate(top_left, top_right, scaled_x - int(math.floor(scaled_x)))
+            bot = interpolate(bot_left, bot_right, scaled_x - int(math.floor(scaled_x)))
+            midpoint = interpolate(top, bot, (scaled_y - int(math.floor(scaled_y))))
 
             newgrid[y][x] = midpoint
         0
@@ -62,8 +62,9 @@ def perlin_noise_grid(w, h, persistence, octaves):
     grid = [[0 for _ in range(w)] for _ in range(h)]
 
     total_amp = 0
+    # print(octaves)
     for octo in octaves:
-        freq = 2 ** octo
+        freq = 2.0 ** octo
         amp = persistence ** octo
         total_amp += amp
         tmp = white_noise_grid(w * freq, h * freq)
@@ -110,7 +111,7 @@ def count(grid):
 def distribution_test():
     ret = []
     for _ in range(250):
-        perlin = perlin_noise_grid(w,h, 1/4, [-2, -1, 0, 1, 2, 3, 4])
+        perlin = perlin_noise_grid(500, 500, 1.0/4.0, [-2, -1, 0, 1, 2, 3, 4])
         ret.append(count(perlin))
 
     ocean = sea = grass = forest = mountain = peak = 0
@@ -130,3 +131,6 @@ def distribution_test():
     print("forest = %s;" % (forest / total))
     print("mountain = %s;" % (mountain / total))
     print("peak = %s;" % (peak / total))
+
+if __name__ == "__main__":
+    distribution_test()
