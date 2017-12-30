@@ -1,5 +1,4 @@
-__pycache__/
-*.swp
-*~
+*.png
 *.pyc
-noise.json
+__pycache__/
+venv

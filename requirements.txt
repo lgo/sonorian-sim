@@ -1,0 +1,4 @@
+numpy==1.13.3
+pypng==0.0.18
+noise==1.2.2
+opensimplex==0.2
