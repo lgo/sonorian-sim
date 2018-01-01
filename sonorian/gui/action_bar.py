@@ -1,5 +1,6 @@
 import curses
-from .actions import Action
+# FIXME(joey): Circular import. This is only needed for type-checking tbh.
+#from .actions import Action
 
 # FIXME(joey): Colours are off as my terminal colours are wonky :/
 # TODO(joey): Make these enums.

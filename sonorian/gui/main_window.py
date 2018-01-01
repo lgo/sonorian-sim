@@ -1,6 +1,6 @@
 import sys
 import curses
-from .action_bar import ActionBar, STATUS_OK, STATUS_ERROR, ACTIONS_HOMESCREEN
+from .action_bar import ActionBar, STATUS_OK, STATUS_ERROR
 from .actions import ActionMap, ACTIONS_HOMESCREEN
 
 class MainWindow(object):
@@ -90,7 +90,7 @@ class MainWindow(object):
         1) Updating the action bar display.
         2) Updating the action map for event handling.
         """
-        self.action_bar.set_actions(action)
+        self.action_bar.set_actions(actions)
         self.action_map.clear()
         for action in actions:
             self.action_map[action.key] = action
