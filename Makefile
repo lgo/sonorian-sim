@@ -1,6 +1,8 @@
 
+default: devrun
+
 devrun: venv
-	./run.sh
+	./run.sh sonorian/main.py
 
 devbuild: venv
 	venv/bin/python setup.py install
