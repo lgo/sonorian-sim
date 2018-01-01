@@ -4,22 +4,22 @@ import random
 import seamless
 from opensimplex import opensimplex
 
-"""
-noise_map
-"""
-
 class NoiseMap(object):
     """
-    Noise map is a lazily generated noise map.
+    Provides a lazily generated noise map.
     """
 
     def __init__(self, height, width, detail=10, seed=None, offset=0):
         """
-        height is an int
-        width is an int
-        detail is a float
-        seed is an int (optional)
-        offset is a float
+        Parameters
+        ----------
+        height : int
+        width : int
+        detail : float (default=10)
+            adjusts the granularitylevel of detail in the generated noise
+        seed : int (default=None)
+            if None, a random value is used
+        offset : float (default=0)
         """
         if seed is None:
             seed = random.randint(0, sys.maxsize)
