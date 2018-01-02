@@ -109,7 +109,7 @@ class Submenu(MenuTree, MenuItem):
         # TODO(joey): Maybe the fn call for Submenu should be owned
         # completely by window to happen. The location of this fcn is
         # obscure.
-        return lambda window: window.menu_enter(self.key)
+        return lambda window: window.menu_enter(self.key())
 
     def __str__(self, level=0):
         submenu_line = ("  " * level) + \

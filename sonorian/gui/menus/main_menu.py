@@ -15,10 +15,13 @@ def _quit(window):
     sys.exit(0)
 
 def _settings_size(window):
-    pass
+    window.action_bar.set_msg('(would have) set size',
+                              status=STATUS_OK)
+
 
 def _settings_probability(window):
-    pass
+    window.action_bar.set_msg('(would have) set probabilities',
+                              status=STATUS_OK)
 
 def generate_main_menu(gen):
     gen += Action('g', 'generate', _generate)

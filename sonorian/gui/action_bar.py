@@ -58,6 +58,9 @@ class ActionBar(object):
         if refresh:
             self.scr.refresh()
 
+    def clear_msg(self):
+        self.set_msg("")
+
     def resize(self):
         """
         Resize the action bar.

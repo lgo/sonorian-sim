@@ -62,6 +62,9 @@ class MainWindow(object):
         Receive input and execute an action.
         """
         ch = self.stdscr.getch()
+        # Clear out the action status. If the next action does not
+        # produce a message, then it will remain blank.
+        self.action_bar.clear_msg()
         if ch == curses.KEY_RESIZE:
             self.call_for_resize()
         elif ch == -1:
@@ -100,17 +103,18 @@ class MainWindow(object):
         self._menu = menu
         self.action_bar.set_actions(self._menu)
 
-    def menu_move_back(self):
+    def menu_back(self):
         # TODO(joey): Check if the menu stack is empty.
         self._menu = self._menu_stack.pop()
         self.action_bar.set_actions(self._menu)
 
     def menu_enter(self, key):
-        if key not in self._menu:
+        item = self._menu.get(key)
+        if item is None:
             raise Exception("unexpected error: expected value MenuTree element")
-        if not isinstance(self._menu[key], Submenu):
+        if not isinstance(item, Submenu):
             raise Exception("unexpected error: expected Submenu")
         self._menu_stack.append(self._menu)
-        self._menu = self._menu.get(key)
+        self._menu = item
         self.action_bar.set_actions(self._menu)
 
