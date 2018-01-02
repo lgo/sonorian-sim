@@ -1,12 +1,9 @@
 import curses
+
+from sonorian.gui.status import STATUS_OK, STATUS_ERROR
 # FIXME(joey): Circular import. This is only needed for type-checking tbh.
 #from .actions import Action
 
-# FIXME(joey): Colours are off as my terminal colours are wonky :/
-# TODO(joey): Make these enums.
-STATUS_SUCCESS = curses.COLOR_BLUE
-STATUS_OK = curses.A_NORMAL
-STATUS_ERROR = curses.COLOR_YELLOW
 
 ACTION_BAR_HEIGHT = 3
 
@@ -22,6 +19,9 @@ class ActionBar(object):
         Represents mutable state of the action bar. Modifying State
         values corresponds to display changes.
         """
+        # TODO(joey): This is a weird attempt at dividing the
+        # serializable state from the working state. We shall see how
+        # this goes.
         def __init__(self):
             self.available_actions = [] # type: ListOf[actions.Action]
             self.msg = None # type: str
@@ -34,14 +34,15 @@ class ActionBar(object):
             self.parent_height - ACTION_BAR_HEIGHT, 0)
         self.state = ActionBar.State()
 
-    def set_actions(self, actions):
+    def set_actions(self, actions, refresh=True):
         """
         Sets the available actions and updates the display.
         """
         # TODO(joey): Set up the ActionMap and event handling.
         self.state.available_actions = actions
         self._redraw_actions()
-        self.scr.refresh()
+        if refresh:
+            self.scr.refresh()
 
     def set_msg(self, msg, status=STATUS_OK, refresh=True):
         """
@@ -50,14 +51,8 @@ class ActionBar(object):
         """
         self.state.msg = msg
         self.state.status = status
-        # TODO(joey): Handle other statuses.
-        if status == STATUS_OK:
-            self.scr.addstr(
-                2, 2, msg)
-        else:
-            self.scr.addstr(
-                2, 2, msg, curses.color_pair(status))
-
+        self.scr.addstr(
+            2, 2, msg, curses.color_pair(status))
         self.scr.clrtoeol()
 
         if refresh:
@@ -94,9 +89,8 @@ class ActionBar(object):
         self._redraw_actions()
         self.scr.addstr(2, 0, '>')
 
-
     def _redraw_actions(self):
-        action_strs = ["({key}) {name}".format(key=action.key, name=action.name)
+        action_strs = ["({key}) {name}".format(key=action.key(), name=action.name)
                        for action in self.state.available_actions]
         self.scr.addstr(1, 0, "   ".join(action_strs))
         self.scr.clrtoeol()

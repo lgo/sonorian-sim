@@ -1,7 +1,15 @@
 import sys
 import curses
-from .action_bar import ActionBar, STATUS_OK, STATUS_ERROR
-from .actions import ActionMap, ACTIONS_HOMESCREEN
+
+from sonorian.gui.action_bar import ActionBar, STATUS_OK, STATUS_ERROR
+from sonorian.gui.menu_builder import MenuTreeGenerator, Submenu
+from sonorian.gui.menus.main_menu import generate_main_menu
+
+import sys
+
+def eprint(*args, **kwargs):
+    print(*args, file=sys.stderr, **kwargs)
+
 
 class MainWindow(object):
     """
@@ -10,8 +18,7 @@ class MainWindow(object):
 
     def __init__(self):
         self.world = None
-        self.action_map = ActionMap()
-        pass
+        self._menu_stack = []
 
     def loop(self):
         """
@@ -40,8 +47,11 @@ class MainWindow(object):
 
         # Initialize the action bar.
         self.action_bar = ActionBar(self.stdscr)
-        self.set_actions(ACTIONS_HOMESCREEN)
         self.action_bar.redraw()
+
+        # Initialize main menu. It also calls into the action_bar to set
+        # the menu.
+        self.set_menu(self.main_menu)
 
         # Start receiving input.
         while True:
@@ -57,11 +67,8 @@ class MainWindow(object):
         elif ch == -1:
             # No input is available. no-op
             pass
-        elif ch in self.action_map:
-            self.action_map[ch].run_action(self)
-        elif ch == ord('g'):
-            self.action_bar.set_msg(
-                '(would have) generated world', status=STATUS_OK)
+        elif self._menu.get(chr(ch)) is not None:
+            self._menu.get(chr(ch)).fn()(self)
         else:
             msg = None
             # ch is not always a valid character. For example, negative
@@ -84,14 +91,26 @@ class MainWindow(object):
     def redraw_world(self):
         self.stdscr.clear()
 
-    def set_actions(self, actions):
-        """
-        Sets the available user actions. This involves:
-        1) Updating the action bar display.
-        2) Updating the action map for event handling.
-        """
-        self.action_bar.set_actions(actions)
-        self.action_map.clear()
-        for action in actions:
-            self.action_map[action.key] = action
+    @property
+    def main_menu(self):
+        gen = MenuTreeGenerator()
+        return generate_main_menu(gen)
+
+    def set_menu(self, menu):
+        self._menu = menu
+        self.action_bar.set_actions(self._menu)
+
+    def menu_move_back(self):
+        # TODO(joey): Check if the menu stack is empty.
+        self._menu = self._menu_stack.pop()
+        self.action_bar.set_actions(self._menu)
+
+    def menu_enter(self, key):
+        if key not in self._menu:
+            raise Exception("unexpected error: expected value MenuTree element")
+        if not isinstance(self._menu[key], Submenu):
+            raise Exception("unexpected error: expected Submenu")
+        self._menu_stack.append(self._menu)
+        self._menu = self._menu.get(key)
+        self.action_bar.set_actions(self._menu)
 
