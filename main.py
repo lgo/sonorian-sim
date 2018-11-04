@@ -1,4 +1,4 @@
-from sonorian.gui import MainWindow
+from sonorian.gui.main_window import MainWindow
 
 if __name__ == "__main__":
     MainWindow().loop()

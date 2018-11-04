@@ -1,8 +1,9 @@
 import png
 import sys
 import random
-import seamless
+import sonorian.seamless as seamless
 from opensimplex import opensimplex
+
 
 class NoiseMap(object):
     """

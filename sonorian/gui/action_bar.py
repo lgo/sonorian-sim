@@ -1,7 +1,11 @@
 import curses
 
-from sonorian.gui.status import STATUS_OK, STATUS_ERROR
-# FIXME(joey): Circular import. This is only needed for type-checking tbh.
+# TOOD(joey): These are imported from action_bar instead of status by
+# other files.
+import sonorian.gui.status as status
+
+# FIXME(joey): Circular import, although this is only required for type
+# annotations.
 #from .actions import Action
 
 
@@ -19,6 +23,7 @@ class ActionBar(object):
         Represents mutable state of the action bar. Modifying State
         values corresponds to display changes.
         """
+
         # TODO(joey): This is a weird attempt at dividing the
         # serializable state from the working state. We shall see how
         # this goes.
@@ -44,7 +49,7 @@ class ActionBar(object):
         if refresh:
             self.scr.refresh()
 
-    def set_msg(self, msg, status=STATUS_OK, refresh=True):
+    def set_msg(self, msg, status=status.STATUS_OK, refresh=True):
         """
         Set msg displayed in the action bar. By default the screen will
         be refreshed.

@@ -1,9 +1,13 @@
 import sys
 import curses
+import importlib
 
-from sonorian.gui.action_bar import ActionBar, STATUS_OK, STATUS_ERROR
-from sonorian.gui.menu_builder import MenuTreeGenerator, Submenu
-from sonorian.gui.menus.main_menu import generate_main_menu
+import sonorian.gui.action_bar as action_bar
+import sonorian.gui.menu_builder as menu_builder
+import sonorian.gui.status as status
+import sonorian.gui.menus.main_menu as main_menu
+import sonorian.world as world
+
 
 import sys
 
@@ -17,7 +21,7 @@ class MainWindow(object):
     """
 
     def __init__(self):
-        self.world = None
+        self._world = None
         self._menu_stack = []
 
     def loop(self):
@@ -46,7 +50,7 @@ class MainWindow(object):
             curses.init_pair(i + 1, i, -1)
 
         # Initialize the action bar.
-        self.action_bar = ActionBar(self.stdscr)
+        self.action_bar = action_bar.ActionBar(self.stdscr)
         self.action_bar.redraw()
 
         # Initialize main menu. It also calls into the action_bar to set
@@ -80,7 +84,7 @@ class MainWindow(object):
                 msg = 'invalid key (%d/%c)' % (ch, ch)
             else:
                 msg = 'invalid key (%d)' % ch
-            self.action_bar.set_msg(msg, status=STATUS_ERROR)
+            self.action_bar.set_msg(msg, status=status.STATUS_ERROR)
 
     def call_for_resize(self):
         """
@@ -94,10 +98,14 @@ class MainWindow(object):
     def redraw_world(self):
         self.stdscr.clear()
 
+    def set_world(self, world):
+        self._world = world
+        # TODO(joey): Draw world.
+
     @property
     def main_menu(self):
-        gen = MenuTreeGenerator()
-        return generate_main_menu(gen)
+        gen = menu_builder.MenuTreeGenerator()
+        return main_menu.generate_main_menu(gen)
 
     def set_menu(self, menu):
         self._menu = menu
@@ -112,9 +120,15 @@ class MainWindow(object):
         item = self._menu.get(key)
         if item is None:
             raise Exception("unexpected error: expected value MenuTree element")
-        if not isinstance(item, Submenu):
-            raise Exception("unexpected error: expected Submenu")
+        if not isinstance(item, menu_builder.Submenu):
+            raise Exception("unexpected error: expected menu_builder.Submenu")
         self._menu_stack.append(self._menu)
         self._menu = item
         self.action_bar.set_actions(self._menu)
 
+
+    def reload_code(self):
+        importlib.reload(world)
+        if self._world is not None:
+            dump = self._world.serialize()
+            self._world = world.World.from_dump(dump)

@@ -4,7 +4,7 @@ MenuTree is composed of MenuItems, which are either Submenu sub-trees or
 Actions leaf nodes.
 """
 
-from abc import ABC, abstractmethod
+import abc
 import collections
 import sys
 
@@ -12,20 +12,20 @@ import sys
 def eprint(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
 
-class MenuItem(ABC):
+class MenuItem(abc.ABC):
     """
     An interface that must be implemented for all
     items that are inserted into the MenuTree.
     """
 
-    @abstractmethod
+    @abc.abstractmethod
     def key(self):
         """
         The key uniquely identifying the MenuItem.
         """
         raise NotImplementedError()
 
-    @abstractmethod
+    @abc.abstractmethod
     def fn(self):
         """
         Return the action to execute on MenuItem selection.

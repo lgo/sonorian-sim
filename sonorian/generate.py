@@ -1,3 +1,5 @@
+# FIXME(joey): This file has rotted and is not used.
+
 import random
 import png
 from worldgen import white_noise_grid, scale_grid, smooth_grid, perlin_noise_grid
